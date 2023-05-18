@@ -1,0 +1,25 @@
+*{
+    font-family: Beirut;
+}
+
+
+.window{
+    background-color: white;
+}
+
+QLineEdit {
+    color: black;
+    border-style: solid;
+    border: 1px solid black;
+    width: 50%;
+    height: 50%;
+    font-size: large;
+}
+
+.box1 {
+    background-color: rgba(255, 223, 116, 0.76);
+}
+
+.box2 {
+    background-color: rgba(62, 208, 252, 0.51);
+}
