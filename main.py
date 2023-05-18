@@ -1,34 +1,33 @@
 import sys
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPalette, QColor, QFont, QIntValidator
-from PyQt6.QtWidgets import (QWidget, QLabel,
-                             QLineEdit, QApplication, QGridLayout, QFrame)
+from PyQt6.QtGui import QFont, QIntValidator
+from PyQt6.QtWidgets import (QWidget,
+                             QLineEdit, QApplication, QGridLayout)
 
 
 class MainWindow(QWidget):
 
     def __init__(self):
         super().__init__()
+        # self.setFixedSize(600, 600)
+        self.line_edit_size = None
         self.grid = None
         self.initUI()
-
 
     def resizeEvent(self, event):
         # Get the current window size
         self.adjustWindowSize()
         self.adjustFontSizes()
-        self.adjustGridLayoutSpacing()
-
-
+        self.adjustLineEditSizes()
         event.accept()
 
     def initUI(self):
 
         self.grid = QGridLayout()
         self.setLayout(self.grid)
-        self.grid.setSpacing(5)
         self.setProperty("class", "window")  # Set background color
 
+        self.line_edit_size = 10
 
         # tiles = [[_ for _ in range(1, 10)] for _ in range(1, 10)]
 
@@ -50,14 +49,16 @@ class MainWindow(QWidget):
                 else:
                     tile_label.setProperty("class", "box2")
 
-        self.setGeometry(300, 300, 300, 300)
+        self.setGeometry(200, 200, 500, 500)
         self.setWindowTitle('Sudoku Solver')
+
+        # self.adjustFontSizes()  # Call the method initially to set the font sizes
+        # self.adjustLineEditSizes()  # Call the method initially to set the QLineEdit sizes
 
     # def onChanged(self, text):
     #
     #     self.lbl.setText(text)
     #     self.lbl.adjustSize()
-
 
     def adjustWindowSize(self):
         current_size = self.size()
@@ -71,7 +72,7 @@ class MainWindow(QWidget):
         windowWidth = self.width()
 
         # Calculate the font size based on the window width
-        fontSize = int(windowWidth / 25)  # Adjust the division factor to your preference
+        fontSize = int(windowWidth / 15)  # Adjust the division factor to your preference
 
         # Create a QFont object with the desired font family and size
         font = QFont("Beirut", fontSize)
@@ -80,15 +81,20 @@ class MainWindow(QWidget):
         for child in self.findChildren(QLineEdit):
             child.setFont(font)
 
-
-    def adjustGridLayoutSpacing(self):
+    def adjustLineEditSizes(self):
         windowWidth = self.width()
 
-        # Calculate the spacing based on the window width
-        spacing = int(windowWidth / 100)  # Adjust the division factor to your preference
+        # Calculate the new size for the QLineEdit widgets based on the window width
+        lineEditSize = int(windowWidth / 10)  # Adjust the division factor to your preference
 
-        # Set the spacing for the QGridLayout
-        self.grid.setSpacing(spacing)
+        # Only update the size if it has changed
+        if self.line_edit_size != lineEditSize:
+            self.line_edit_size = lineEditSize
+
+            # Iterate through all QLineEdit widgets and set the new fixed size
+            for child in self.findChildren(QLineEdit):
+                child.setFixedSize(self.line_edit_size, self.line_edit_size)
+
 
 def main():
     app = QApplication(sys.argv)
