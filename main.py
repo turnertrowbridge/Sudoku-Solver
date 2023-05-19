@@ -3,7 +3,7 @@ from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QFont, QIntValidator
 from PyQt6.QtWidgets import QWidget, QLineEdit, QApplication, QGridLayout, QVBoxLayout, QLabel, QHBoxLayout, \
     QPushButton, QSizePolicy, QMessageBox
-import solve
+import sudoku_algorithms
 
 
 class MainWindow(QWidget):
@@ -93,8 +93,11 @@ class MainWindow(QWidget):
             box_contents.append(row_contents)
 
         print(box_contents)
-        if solve.isValidSudoku(self, box_contents):
+        if sudoku_algorithms.isValidSudoku(self, box_contents):
             print("Valid Sudoku board")
+            sudoku_algorithms.solveSudoku(self, box_contents)
+            print(box_contents)
+            self.setSolution(box_contents)
         else:
             QMessageBox.critical(self, "Invalid Sudoku Board", "Not a valid Sudoku board.")
 
@@ -104,6 +107,11 @@ class MainWindow(QWidget):
                 widget = self.grid_layout.itemAtPosition(row, col).widget()
                 widget.setText("")
 
+    def setSolution(self, box_contents):
+        for row in range(9):
+            for col in range(9):
+                widget = self.grid_layout.itemAtPosition(row, col).widget()
+                widget.setText(box_contents[row][col])
 
 def main():
     app = QApplication(sys.argv)
