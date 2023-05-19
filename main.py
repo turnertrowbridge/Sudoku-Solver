@@ -2,13 +2,15 @@ import sys
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QFont, QIntValidator
 from PyQt6.QtWidgets import QWidget, QLineEdit, QApplication, QGridLayout, QVBoxLayout, QLabel, QHBoxLayout, \
-    QPushButton, QSizePolicy
+    QPushButton, QSizePolicy, QMessageBox
+import solve
 
 
 class MainWindow(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.grid_layout = None
         self.initUI()
 
     def initUI(self):
@@ -26,18 +28,18 @@ class MainWindow(QWidget):
         main_layout.addLayout(word_layout)
 
         # Grid
-        grid_layout = QGridLayout()
-        main_layout.addLayout(grid_layout)
+        self.grid_layout = QGridLayout()
+        main_layout.addLayout(self.grid_layout)
         self.setProperty("class", "window")  # Set background color
-        grid_layout.setSpacing(0)  # Set the spacing between items in the grid to 0
-        grid_layout.setContentsMargins(0, 0, 0, 0)
+        self.grid_layout.setSpacing(0)  # Set the spacing between items in the grid to 0
+        self.grid_layout.setContentsMargins(0, 0, 0, 0)
 
         for row in range(9):
             for col in range(9):
                 tile_label = QLineEdit(alignment=Qt.AlignmentFlag.AlignCenter)
                 tile_label.setValidator(QIntValidator(1, 9))
                 tile_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-                grid_layout.addWidget(tile_label, row, col)
+                self.grid_layout.addWidget(tile_label, row, col)
 
                 box_class = "box1" if (row // 3 % 2 == col // 3 % 2) else "box2"
                 if (row + col) % 2 != 0:
@@ -46,8 +48,9 @@ class MainWindow(QWidget):
 
         # Buttons
         solve_button = QPushButton("Solve")
+        solve_button.clicked.connect(self.onSolve)  # Connect the button's clicked signal to the onSolve slot
         reset_button = QPushButton("Reset")
-        solve_button.clicked.connect(self.onSubmit)  # Connect the button's clicked signal to the onSubmit slot
+        reset_button.clicked.connect(self.onReset)  # Connect the button's clicked signal to the onReset slot
         button_layout = QHBoxLayout()
         button_layout.addWidget(solve_button)
         button_layout.addWidget(reset_button)
@@ -77,13 +80,29 @@ class MainWindow(QWidget):
         for child in self.findChildren(QLineEdit):
             child.setFont(font)
 
-    def onSubmit(self):
+    def onSolve(self):
         box_contents = []
-        for child in self.findChildren(QLineEdit):
-            text = child.text()
-            box_contents.append(text)
+        for row in range(9):
+            row_contents = []
+            for col in range(9):
+                widget = self.grid_layout.itemAtPosition(row, col).widget()
+                text = widget.text()
+                if text == "":
+                    text = "."
+                row_contents.append(text)
+            box_contents.append(row_contents)
 
         print(box_contents)
+        if solve.isValidSudoku(self, box_contents):
+            print("Valid Sudoku board")
+        else:
+            QMessageBox.critical(self, "Invalid Sudoku Board", "Not a valid Sudoku board.")
+
+    def onReset(self):
+        for row in range(9):
+            for col in range(9):
+                widget = self.grid_layout.itemAtPosition(row, col).widget()
+                widget.setText("")
 
 
 def main():
