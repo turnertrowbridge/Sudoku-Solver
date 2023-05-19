@@ -1,8 +1,7 @@
 import sys
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont, QIntValidator
-from PyQt6.QtWidgets import (QWidget,
-                             QLineEdit, QApplication, QGridLayout)
+from PyQt6.QtWidgets import (QWidget, QLineEdit, QApplication, QGridLayout, QSizePolicy)
 
 
 class MainWindow(QWidget):
@@ -18,7 +17,7 @@ class MainWindow(QWidget):
         # Get the current window size
         self.adjustWindowSize()
         self.adjustFontSizes()
-        self.adjustLineEditSizes()
+        # self.adjustLineEditSizes()
         event.accept()
 
     def initUI(self):
@@ -26,8 +25,10 @@ class MainWindow(QWidget):
         self.grid = QGridLayout()
         self.setLayout(self.grid)
         self.setProperty("class", "window")  # Set background color
+        self.grid.setSpacing(0)  # Set the spacing between items in the grid to 0
+        self.grid.setContentsMargins(0, 0, 0, 0)
 
-        self.line_edit_size = 10
+        self.line_edit_size = 50
 
         # tiles = [[_ for _ in range(1, 10)] for _ in range(1, 10)]
 
@@ -38,22 +39,28 @@ class MainWindow(QWidget):
                 #     continue
                 tile_label = QLineEdit()
                 tile_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
+                tile_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
                 validator = QIntValidator(1, 9)
                 tile_label.setValidator(validator)
+                # tile_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
                 self.grid.addWidget(tile_label, row, col)
 
                 if row // 3 % 2 == col // 3 % 2:
-                    tile_label.setProperty("class", "box1")
+                    if (row + col) % 2 == 0:
+                        tile_label.setProperty("class", "box1")
+                    else:
+                        tile_label.setProperty("class", "box1-odd")
                 else:
-                    tile_label.setProperty("class", "box2")
+                    if (row + col) % 2 == 0:
+                        tile_label.setProperty("class", "box2")
+                    else:
+                        tile_label.setProperty("class", "box2-odd")
 
-        self.setGeometry(200, 200, 500, 500)
+        self.setGeometry(100, 100, 100, 100)
         self.setWindowTitle('Sudoku Solver')
 
-        # self.adjustFontSizes()  # Call the method initially to set the font sizes
-        # self.adjustLineEditSizes()  # Call the method initially to set the QLineEdit sizes
+        self.adjustFontSizes()  # Call the method initially to set the font sizes
 
     # def onChanged(self, text):
     #
@@ -80,20 +87,6 @@ class MainWindow(QWidget):
         # Iterate through all QLineEdit widgets and set the font
         for child in self.findChildren(QLineEdit):
             child.setFont(font)
-
-    def adjustLineEditSizes(self):
-        windowWidth = self.width()
-
-        # Calculate the new size for the QLineEdit widgets based on the window width
-        lineEditSize = int(windowWidth / 10)  # Adjust the division factor to your preference
-
-        # Only update the size if it has changed
-        if self.line_edit_size != lineEditSize:
-            self.line_edit_size = lineEditSize
-
-            # Iterate through all QLineEdit widgets and set the new fixed size
-            for child in self.findChildren(QLineEdit):
-                child.setFixedSize(self.line_edit_size, self.line_edit_size)
 
 
 def main():

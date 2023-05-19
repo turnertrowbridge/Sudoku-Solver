@@ -16,10 +16,18 @@ QLineEdit {
     font-size: large;
 }
 
-.box1 {
+.box1, .box1-odd {
     background-color: rgba(255, 223, 116, 0.76);
 }
 
-.box2 {
+.box1-odd {
+    background-color: rgba(255, 223, 116, 0.3);
+}
+
+.box2, .box2-odd {
     background-color: rgba(62, 208, 252, 0.51);
+}
+
+.box2-odd{
+    background-color: rgba(62, 208, 252, 0.2);
 }
