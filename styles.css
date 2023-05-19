@@ -16,6 +16,23 @@ QLineEdit {
     font-size: large;
 }
 
+QPushButton {
+    color: black;
+}
+
+QLabel, .title, .info {
+    color: black;
+    font-family: Arial;
+}
+
+.title {
+    font-weight: bold;
+}
+
+.info {
+    font-style: italic;
+}
+
 .box1, .box1-odd {
     background-color: rgba(255, 223, 116, 0.76);
 }
