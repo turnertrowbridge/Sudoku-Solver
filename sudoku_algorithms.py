@@ -3,8 +3,7 @@ from typing import List
 
 def isValidSudoku(self, board: List[List[str]]) -> bool:
     board_length = len(board)
-
-    # time: O(n^2) space: O(n^2)
+    
     rows = [set() for _ in range(board_length)]
     cols = [set() for _ in range(board_length)]
     squares = [set() for _ in range(board_length)]
@@ -37,9 +36,6 @@ def isValidSudoku(self, board: List[List[str]]) -> bool:
 
 
 def solveSudoku(self, board: List[List[str]]) -> None:
-    """
-    Do not return anything, modify board in-place instead.
-    """
     board_length = len(board)
 
     def solve(r: int, c: int) -> bool:
